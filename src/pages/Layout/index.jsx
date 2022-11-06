@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 
 import { Layout, Menu, Popconfirm } from 'antd'
 import {
@@ -14,31 +14,28 @@ const { Header, Sider } = Layout
 const items = [
   {
     label: '数据概览',
-    key: '1',
+    key: '/',
     icon: <HomeOutlined />,
   },
   {
     label: '内容管理',
-    key: '2',
+    key: '/article',
     icon: <DiffOutlined />,
   },
   {
     label: '发布文章',
-    key: '3',
+    key: '/publish',
     icon: <EditOutlined />,
   },
 ]
 
 const GeekLayout = () => {
+
+  const { pathname } = useLocation()
   const navigate = useNavigate()
 
   const toMenuItem = (e) => {
-    const obj = {
-      '1': '/',
-      '2': '/article',
-      '3': '/publish',
-    }
-    navigate(obj[e.key])
+    navigate(e.key)
   }
 
   return (
@@ -56,10 +53,12 @@ const GeekLayout = () => {
       </Header>
       <Layout>
         <Sider width={200} className="site-layout-background">
+          {/* 高亮原理：defaultSelectedKeys === item的key属性值 */}
+          {/* 获取当前激活的path路径 */}
           <Menu
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={pathname}
             style={{ height: '100%', borderRight: 0 }}
             items={items}
             onClick={toMenuItem}
