@@ -16,6 +16,6 @@ class RootStore {
 const rootStore = new RootStore()
 //导出useStore context
 const context = React.createContext(rootStore)
-const usestore = () => React.useContext(context)
+const useStore = () => React.useContext(context)
 
-export { usestore }
+export { useStore }

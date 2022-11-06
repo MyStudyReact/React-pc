@@ -1,13 +1,17 @@
 import { Card, Button, Checkbox, Form, Input } from 'antd'
 
+import { useStore } from '@/store'
 import logo from '@/assets/logo.png'
 import './index.scss'
 
 const Login = () => {
+  const { loginStore } = useStore()
+
   const onFinish = (values) => {
     // values: 放置的是所有表单项中用户输入的内容
-    // todo:登录
     console.log('Success:', values)
+    // todo:登录
+    loginStore.getToken({ ...values })
   }
 
   return (
@@ -19,6 +23,11 @@ const Login = () => {
         {/* 子项用到的触发事件 需要在Form中都需要声明一下 */}
         <Form
           validateTrigger={['onBlur', 'onChange']}
+          initialValues={{
+            remember: true,
+            mobile: '13811111111',
+            code: '246810'
+          }}
           onFinish={onFinish}>
           <Form.Item
             name="mobile"

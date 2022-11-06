@@ -20,7 +20,7 @@ http.interceptors.request.use((config) => {
 http.interceptors.response.use((response) => {
   // 2xx 范围内的状态码都会触发该函数
   // 对响应式数据的操作
-  return response
+  return response.data
 }, (error) => {
   return Promise.reject(error)
 })

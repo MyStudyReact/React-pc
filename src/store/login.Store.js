@@ -12,11 +12,11 @@ class LoginStore {
     makeAutoObservable(this)
   }
 
-  setToken = async ({ mobile, code }) => {
+  getToken = async ({ mobile, code }) => {
     // 调用我们的登录接口
     const res = await http.post('/authorizations', { mobile, code })
     // 存入token
-    this.token = res.data
+    this.token = res.data.token
   }
 }
 
