@@ -7,6 +7,10 @@ import { AuthComponent } from "@/components/AuthComponent"
 const Login = lazy(() => import("@/pages/Login"))
 const Layout = lazy(() => import("@/pages/Layout"))
 
+const Home = lazy(() => import("@/pages/Home"))
+const Article = lazy(() => import("@/pages/Article"))
+const Publish = lazy(() => import("@/pages/Publish"))
+
 const routesList = [
   /**
    * Layout是需要鉴权处理的,
@@ -14,7 +18,22 @@ const routesList = [
    */
   {
     path: '/',
-    element: <AuthComponent><Layout /></AuthComponent>
+    element: <AuthComponent><Layout /></AuthComponent>,
+    children: [
+      {
+        path: "",
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "/article",
+        element: <Article />,
+      },
+      {
+        path: "/publish",
+        element: <Publish />,
+      }
+    ]
   },
   {
     path: '/login',
