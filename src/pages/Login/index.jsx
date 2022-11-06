@@ -10,15 +10,29 @@ function Login () {
         <img className='login-logo' src={logo} alt=''></img>
 
         {/* 登录表单 */}
-        <Form
-          initialValues={{
-            remember: true,
-          }}>
-          <Form.Item>
+        {/* 子项用到的触发事件 需要在Form中都需要声明一下 */}
+        <Form validateTrigger={['onBlur', 'onChange']}>
+          <Form.Item
+            name="mobile"
+            rules={[
+              {
+                pattern: /^1[3-9]\d{9}$/,
+                message: '手机号码格式不对',
+                validateTrigger: 'onBlur'
+              },
+              { required: true, message: '请输入手机号' }
+            ]}
+          >
             <Input size="large" placeholder="请输入手机号" />
           </Form.Item>
-          <Form.Item>
-            <Input size="large" placeholder="请输入验证码" />
+          <Form.Item
+            name="code"
+            rules={[
+              { len: 6, message: '请输入6个密码', validateTrigger: 'onBlur' },
+              { required: true, message: '请输入密码' }
+            ]}
+          >
+            <Input size="large" placeholder="请输入密码" maxLength={6} />
           </Form.Item>
 
           <Form.Item
