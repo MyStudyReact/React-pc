@@ -89,7 +89,31 @@ body {
 }
 ```
 
-## 5. 配置基础路由
+## 5.别名配置
+`本节目标:` 能够配置配置别名 @为src 引入
+### vite
+**实现步骤**
+1. 在 vite.config.js 里面引入 path : `import path from path`
+2. 在 defineConfig 里的resolve 配置别名: `alias: {'@': path.resolve(__dirname2, 'src')}`
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    //配置别名 @为src 引入
+    alias: {
+      '@': path.resolve(__dirname2, 'src')
+    }
+  }
+})
+```
+
+## 6. 配置基础路由
 `本节目标:` 能够配置登录页面的路由并显示到页面中
 
 **实现步骤**
@@ -142,7 +166,7 @@ function App() {
 export default App
 ```
 
-## 6. 组件库antd使用
+## 7. 组件库antd使用
 `本节目标:`  能够使用antd的Button组件渲染按钮
 
 **实现步骤**
@@ -172,7 +196,7 @@ const Login = () => (
 )
 ```
 
-## 7. 配置别名路径
+## 8. 配置别名路径
 `本节目标:`  能够配置@路径简化路径处理
 
 > [自定义 CRA 的默认配置](https://ant.design/docs/react/use-with-create-react-app-cn#%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE)<br />[craco 配置文档](https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration)
@@ -218,7 +242,7 @@ package.json
 }
 ```
 
-## 8. @别名路径提示
+## 9. @别名路径提示
 `本节目标:`  能够让vscode识别@路径并给出路径提示<br />**实现步骤**
 
 1. 在项目根目录创建 `jsconfig.json` 配置文件
@@ -238,5 +262,5 @@ package.json
 
 vscode会自动读取`jsconfig.json` 中的配置，让vscode知道@就是src目录
 
-## 9. 安装dev-tools调试工具
+## 10. 安装dev-tools调试工具
 > [https://gitee.com/react-cp/react-pc-doc](https://gitee.com/react-cp/react-pc-doc)  这里找到dev-tools.crx文件
