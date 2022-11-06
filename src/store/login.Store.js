@@ -6,7 +6,7 @@ import { http, setToken, getToken } from '@/utils'
 
 class LoginStore {
   // token = ''
-  token = getToken || ''
+  token = getToken() || ''
 
   constructor() {
     // 响应式
