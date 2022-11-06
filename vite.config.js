@@ -6,9 +6,13 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    //配置别名 @为src 引入
     alias: {
-      '@': path.resolve(__dirname, 'src')
-    }
+      // 设置路径 这里resolve和join可自行选用
+      '~': path.resolve(__dirname, './'),
+      //配置别名 @为src 引入
+      '@': path.resolve(__dirname, './src')
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json']
+    // extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
   }
 })

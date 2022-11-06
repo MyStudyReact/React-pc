@@ -112,8 +112,71 @@ export default defineConfig({
   }
 })
 ```
+### create-react-app 
+> [自定义 CRA 的默认配置](https://ant.design/docs/react/use-with-create-react-app-cn#%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE)<br />[craco 配置文档](https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration)
+> - CRA 将所有工程化配置，都隐藏在了 `react-scripts` 包中，所以项目中看不到任何配置信息
+> - 如果要修改 CRA 的默认配置，有以下几种方案： 
+>    1. 通过第三方库来修改，比如，`@craco/craco`  （推荐）
+>    2. 通过执行 `yarn eject` 命令，释放 `react-scripts` 中的所有配置到项目中
 
-## 6. 配置基础路由
+
+
+**实现步骤**
+
+1. 安装修改 CRA 配置的包：`yarn add -D @craco/craco`
+2. 在项目根目录中创建 craco 的配置文件：`craco.config.js`，并在配置文件中配置路径别名
+3. 修改 `package.json` 中的脚本命令
+4. 在代码中，就可以通过 `@` 来表示 src 目录的绝对路径
+5. 重启项目，让配置生效
+
+**代码实现**<br />`craco.config.js`
+```javascript
+const path = require('path')
+
+module.exports = {
+  // webpack 配置
+  webpack: {
+    // 配置别名
+    alias: {
+      // 约定：使用 @ 表示 src 文件所在路径
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
+}
+```
+
+package.json
+```json
+// 将 start/build/test 三个命令修改为 craco 方式
+"scripts": {
+  "start": "craco start",
+  "build": "craco build",
+  "test": "craco test",
+  "eject": "react-scripts eject"
+}
+```
+
+## 6. @别名路径提示
+`本节目标:`  能够让vscode识别@路径并给出路径提示<br />**实现步骤**
+
+1. 在项目根目录创建 `jsconfig.json` 配置文件
+2. 在配置文件中添加以下配置
+
+**代码实现**
+```json
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+vscode会自动读取`jsconfig.json` 中的配置，让vscode知道@就是src目录
+
+## 7. 配置基础路由
 `本节目标:` 能够配置登录页面的路由并显示到页面中
 
 **实现步骤**
@@ -166,7 +229,7 @@ function App() {
 export default App
 ```
 
-## 7. 组件库antd使用
+## 8. 组件库antd使用
 `本节目标:`  能够使用antd的Button组件渲染按钮
 
 **实现步骤**
@@ -196,71 +259,5 @@ const Login = () => (
 )
 ```
 
-## 8. 配置别名路径
-`本节目标:`  能够配置@路径简化路径处理
-
-> [自定义 CRA 的默认配置](https://ant.design/docs/react/use-with-create-react-app-cn#%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE)<br />[craco 配置文档](https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration)
-> - CRA 将所有工程化配置，都隐藏在了 `react-scripts` 包中，所以项目中看不到任何配置信息
-> - 如果要修改 CRA 的默认配置，有以下几种方案： 
->    1. 通过第三方库来修改，比如，`@craco/craco`  （推荐）
->    2. 通过执行 `yarn eject` 命令，释放 `react-scripts` 中的所有配置到项目中
-
-
-
-**实现步骤**
-
-1. 安装修改 CRA 配置的包：`yarn add -D @craco/craco`
-2. 在项目根目录中创建 craco 的配置文件：`craco.config.js`，并在配置文件中配置路径别名
-3. 修改 `package.json` 中的脚本命令
-4. 在代码中，就可以通过 `@` 来表示 src 目录的绝对路径
-5. 重启项目，让配置生效
-
-**代码实现**<br />`craco.config.js`
-```javascript
-const path = require('path')
-
-module.exports = {
-  // webpack 配置
-  webpack: {
-    // 配置别名
-    alias: {
-      // 约定：使用 @ 表示 src 文件所在路径
-      '@': path.resolve(__dirname, 'src')
-    }
-  }
-}
-```
-
-package.json
-```json
-// 将 start/build/test 三个命令修改为 craco 方式
-"scripts": {
-  "start": "craco start",
-  "build": "craco build",
-  "test": "craco test",
-  "eject": "react-scripts eject"
-}
-```
-
-## 9. @别名路径提示
-`本节目标:`  能够让vscode识别@路径并给出路径提示<br />**实现步骤**
-
-1. 在项目根目录创建 `jsconfig.json` 配置文件
-2. 在配置文件中添加以下配置
-
-**代码实现**
-```json
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    }
-  }
-}
-```
-
-vscode会自动读取`jsconfig.json` 中的配置，让vscode知道@就是src目录
-
-## 10. 安装dev-tools调试工具
+## 9 安装dev-tools调试工具
 > [https://gitee.com/react-cp/react-pc-doc](https://gitee.com/react-cp/react-pc-doc)  这里找到dev-tools.crx文件
