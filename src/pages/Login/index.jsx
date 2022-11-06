@@ -3,7 +3,13 @@ import { Card, Button, Checkbox, Form, Input } from 'antd'
 import logo from '@/assets/logo.png'
 import './index.scss'
 
-function Login () {
+const Login = () => {
+  const onFinish = (values) => {
+    // values: 放置的是所有表单项中用户输入的内容
+    // todo:登录
+    console.log('Success:', values)
+  }
+
   return (
     <div className='login'>
       <Card className='login-container'>
@@ -11,7 +17,9 @@ function Login () {
 
         {/* 登录表单 */}
         {/* 子项用到的触发事件 需要在Form中都需要声明一下 */}
-        <Form validateTrigger={['onBlur', 'onChange']}>
+        <Form
+          validateTrigger={['onBlur', 'onChange']}
+          onFinish={onFinish}>
           <Form.Item
             name="mobile"
             rules={[
