@@ -1,6 +1,5 @@
 import { BrowserRouter } from 'react-router-dom'
 import { Suspense } from 'react'
-import { Button } from 'antd'
 
 import './App.css'
 import WrapperRoutes from '@/router'
@@ -14,8 +13,6 @@ function App () {
           <WrapperRoutes></WrapperRoutes>
         </Suspense>
       </BrowserRouter >
-
-      <Button type="primary">Button</Button>
     </div>
   )
 }
