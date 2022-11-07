@@ -263,7 +263,7 @@ const Login = () => (
 > [https://gitee.com/react-cp/react-pc-doc](https://gitee.com/react-cp/react-pc-doc)  这里找到dev-tools.crx文件
 
 # Layout模块
-## 处理Token失效
+## 1. 处理Token失效
 `本节目标:`  能够在响应拦截器中处理token失效
 
 > 说明：为了能够在非组件环境下拿到路由信息，需要我们安装一个history包 或者直接用`window.location.href = '/login'`
@@ -325,4 +325,93 @@ http.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+```
+
+## 2. 首页Home图表展示
+
+`本节目标:`  实现首页echart图表封装展示
+
+![home.png](https://cdn.nlark.com/yuque/0/2022/png/274425/1657200438057-cf9219c1-cbe7-4a04-89c2-c4cc464b9d8d.png#clientId=ue19197e8-cdf9-4&crop=0&crop=0&crop=1&crop=1&errorMessage=unknown%20error&from=drop&id=u6a7e1fa6&name=home.png&originHeight=816&originWidth=1969&originalType=binary&ratio=1&rotation=0&showTitle=false&size=33840&status=error&style=none&taskId=ub52c7310-ed9f-4b4f-b940-89e9936e55d&title=)
+
+**需求描述：**
+
+1. 使用eharts配合react封装柱状图组件Bar
+2. 要求组件的标题title，横向数据xData，纵向数据yData，样式style可定制
+
+**代码实现**<br />`components/Bar/index.js`
+```jsx
+import * as echarts from 'echarts'
+import { useEffect, useRef } from 'react'
+
+function echartInit (node, xData, sData, title) {
+  const myChart = echarts.init(node)
+  // 绘制图表
+  myChart.setOption({
+    title: {
+      text: title
+    },
+    tooltip: {},
+    xAxis: {
+      data: xData
+    },
+    yAxis: {},
+    series: [
+      {
+        name: '销量',
+        type: 'bar',
+        data: sData
+      }
+    ]
+  })
+}
+
+function Bar ({ style, xData, sData, title }) {
+  // 1. 先不考虑传参问题  静态数据渲染到页面中
+  // 2. 把那些用户可能定制的参数 抽象props (1.定制大小 2.data 以及说明文字)
+  const nodeRef = useRef(null)
+  useEffect(() => {
+    echartInit(nodeRef.current, xData, sData, title)
+  }, [xData, sData])
+
+  return (
+    <div ref={nodeRef} style={style}></div>
+  )
+}
+
+export default Bar
+```
+
+`pages/Home/index.js`
+```jsx
+import Bar from "@/components/Bar"
+import './index.scss'
+const Home = () => {
+  return (
+    <div className="home">
+      <Bar
+        style={{ width: '500px', height: '400px' }}
+        xData={['vue', 'angular', 'react']}
+        sData={[50, 60, 70]}
+        title='三大框架满意度' />
+
+      <Bar
+        style={{ width: '500px', height: '400px' }}
+        xData={['vue', 'angular', 'react']}
+        sData={[50, 60, 70]}
+        title='三大框架使用度' />
+    </div>
+  )
+}
+
+export default Home
+```
+
+`pages/Home/index.scss`
+
+```css
+.home {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
 ```

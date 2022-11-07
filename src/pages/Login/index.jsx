@@ -3,7 +3,7 @@ import { Card, Button, Checkbox, Form, Input, message } from 'antd'
 import { useStore } from '@/store'
 import { useNavigate } from 'react-router-dom'
 
-import logo from '@/assets/logo.png'
+import logo from '@/assets/img/logo.png'
 import './index.scss'
 
 const Login = () => {
