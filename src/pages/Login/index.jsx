@@ -14,7 +14,6 @@ const Login = () => {
 
   const onFinish = async (values) => {
     // values: 放置的是所有表单项中用户输入的内容
-    console.log('Success:', values)
 
     try {
       // 获取token

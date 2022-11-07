@@ -34,18 +34,25 @@ const items = [
 ]
 
 const GeekLayout = () => {
-  const { userStore } = useStore()
+  const { userStore, loginStore } = useStore()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    userStore.getUserInfo()
+  }, [])
 
   const toMenuItem = (e) => {
     navigate(e.key)
   }
 
-  useEffect(() => {
-    userStore.getUserInfo()
-  }, [])
+  const confirm = (e) => {
+    console.log(e)
+    // 退出登录 (删除token 跳回到登录)
+    loginStore.loginOut()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <Layout>
@@ -54,7 +61,11 @@ const GeekLayout = () => {
         <div className="user-info">
           <span className="user-name">{userStore.userInfo.name}</span>
           <span className="user-logout">
-            <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
+            <Popconfirm
+              title="是否确认退出？"
+              okText="确定"
+              cancelText="取消"
+              onConfirm={confirm}>
               <LogoutOutlined /> 退出
             </Popconfirm>
           </span>
