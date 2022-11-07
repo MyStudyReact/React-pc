@@ -3,7 +3,7 @@ import { history } from '@/utils/history'
 // 封装axios
 
 import axios from 'axios'
-import { getToken } from './token'
+import { getToken, removeToken } from './token'
 // 实例化 请求拦截器 响应拦截器
 
 // 实例化
@@ -44,6 +44,7 @@ http.interceptors.response.use((response) => {
      */
 
     // window.location.href = '/login'
+    removeToken()
     history.replace('/login')
   }
 
