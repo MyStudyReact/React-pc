@@ -1,4 +1,6 @@
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
+import { observer } from 'mobx-react-lite'
 
 import { Layout, Menu, Popconfirm } from 'antd'
 import {
@@ -8,6 +10,8 @@ import {
   LogoutOutlined
 } from '@ant-design/icons'
 import './index.scss'
+
+import { useStore } from '@/store'
 
 const { Header, Sider } = Layout
 //4.20.0 用法升级
@@ -30,6 +34,7 @@ const items = [
 ]
 
 const GeekLayout = () => {
+  const { userStore } = useStore()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
@@ -38,12 +43,16 @@ const GeekLayout = () => {
     navigate(e.key)
   }
 
+  useEffect(() => {
+    userStore.getUserInfo()
+  }, [])
+
   return (
     <Layout>
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">user.name</span>
+          <span className="user-name">{userStore.userInfo.name}</span>
           <span className="user-logout">
             <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
               <LogoutOutlined /> 退出
@@ -84,4 +93,4 @@ const GeekLayout = () => {
   )
 }
 
-export default GeekLayout
+export default observer(GeekLayout)
