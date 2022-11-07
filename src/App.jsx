@@ -1,5 +1,6 @@
 import { unstable_HistoryRouter as HistoryRouter, BrowserRouter } from 'react-router-dom'
 import { Suspense } from 'react'
+import { Spin } from 'antd'
 
 import './App.css'
 import WrapperRoutes from '@/router'
@@ -13,7 +14,7 @@ function App () {
     <div className="App">
       {/* <BrowserRouter> */}
       <HistoryRouter history={history}>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Spin size="large" className='spinClass' />}>
           <WrapperRoutes></WrapperRoutes>
         </Suspense>
       </HistoryRouter>
