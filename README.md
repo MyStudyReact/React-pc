@@ -261,3 +261,68 @@ const Login = () => (
 
 ## 9 安装dev-tools调试工具
 > [https://gitee.com/react-cp/react-pc-doc](https://gitee.com/react-cp/react-pc-doc)  这里找到dev-tools.crx文件
+
+# Layout模块
+## 处理Token失效
+`本节目标:`  能够在响应拦截器中处理token失效
+
+> 说明：为了能够在非组件环境下拿到路由信息，需要我们安装一个history包 或者直接用`window.location.href = '/login'`
+
+
+![historyoutside.png](https://cdn.nlark.com/yuque/0/2022/png/274425/1657200468221-a17937f9-baec-4acf-be7e-988d2be895df.png#clientId=ue19197e8-cdf9-4&crop=0&crop=0&crop=1&crop=1&errorMessage=unknown%20error&from=drop&id=ue21b7358&name=historyoutside.png&originHeight=910&originWidth=1794&originalType=binary&ratio=1&rotation=0&showTitle=false&size=115916&status=error&style=none&taskId=uf2d10f89-83fe-4317-a6e2-bfc3cd0b7f5&title=)
+
+**实现步骤**
+
+1. 安装history包：`npm i history`
+2. 创建 `utils/history.js`文件
+3. 在app.js中使用我们新建的路由并配置history参数
+4. 通过响应拦截器处理 token 失效，如果发现是401调回到登录页
+
+**代码实现**<br />`utils/history.js`
+```javascript
+// https://github.com/remix-run/react-router/issues/8264
+
+import { createBrowserHistory } from 'history'
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom'
+const history = createBrowserHistory()
+
+export {
+  HistoryRouter,
+  history
+}
+```
+
+`app.js`
+```jsx
+import { HistoryRouter, history } from './utils/history'
+
+function App() {
+  return (
+    <HistoryRouter history={history}>
+       ...省略无关代码
+    </HistoryRouter>
+  )
+}
+
+export default App
+```
+
+`utils/http.js`
+```javascript
+import { history } from './history'
+
+http.interceptors.response.use(
+  response => {
+    return response.data
+  },
+  error => {
+    if (error.response.status === 401) {
+      // 删除token
+      clearToken()
+      // 跳转到登录页
+      history.push('/login')
+    }
+    return Promise.reject(error)
+  }
+)
+```
