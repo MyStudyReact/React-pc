@@ -1,9 +1,14 @@
 
 import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+
 import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import 'moment/locale/zh-cn'
 import locale from 'antd/es/date-picker/locale/zh_CN'
+
+import { http } from '@/utils/http'
+
 
 import './index.scss'
 import img404 from '@/assets/img/error.png'
@@ -13,11 +18,22 @@ const { RangePicker } = DatePicker
 
 const initialValues = {
   status: -1,
-  channel_id: 'lucy',
+  channel_id: '',
   date: '',
 }
 
 const Article = () => {
+  // 频道列表管理
+  const [channelList, setChannelList] = useState([])
+
+  useEffect(() => {
+    loadChannelList()
+  }, [])
+
+  const loadChannelList = async () => {
+    const res = await http.get('/channels')
+    setChannelList(res.data.channels)
+  }
 
   const data = [
     {
@@ -123,8 +139,11 @@ const Article = () => {
               placeholder="请选择文章频道"
               style={{ width: 120 }}
             >
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
+              {channelList.map((item) => {
+                return (
+                  <Option key={item.id} value={item.id}>{item.name}</Option>
+                )
+              })}
             </Select>
           </Form.Item>
 
