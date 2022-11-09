@@ -155,6 +155,13 @@ const Article = () => {
     })
   }
 
+  const pageChange = (page, pageSize) => {
+    setParams({
+      ...params,
+      page
+    })
+  }
+
   return (
     <div>
       {/* 筛选区域 */}
@@ -210,7 +217,16 @@ const Article = () => {
 
       {/* 文章列表区域 */}
       <Card title={`根据筛选条件共查询到 ${articleData.count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={articleData.list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={articleData.list}
+          pagination={{
+            pageSize: params.per_page,
+            total: articleData.count,
+            onChange: pageChange,
+          }}
+        />
       </Card>
     </div>
   )
