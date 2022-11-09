@@ -1,5 +1,5 @@
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space, Popconfirm } from 'antd'
@@ -95,6 +95,11 @@ const Article = () => {
     })
   }
 
+  const navigate = useNavigate()
+  const goPublish = (data => {
+    navigate(`/publish?id=${data.id}`)
+  })
+
   const columns = [
     {
       title: '封面',
@@ -136,7 +141,11 @@ const Article = () => {
         return (
           articleData.list.length >= 1 ? (
             <Space size="middle">
-              <Button type="primary" shape="circle" icon={<EditOutlined />} />
+              <Button
+                type="primary"
+                shape="circle"
+                icon={<EditOutlined />}
+                onClick={() => goPublish(data)} />
               <Popconfirm
                 title="确定要删除吗?"
                 okText="确定"
