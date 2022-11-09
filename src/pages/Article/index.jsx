@@ -23,6 +23,9 @@ const initialValues = {
 }
 
 const Article = () => {
+  // 页面是否加载中
+  const [isLoadingData, setIsLoadingData] = useState(false)
+
   // 频道列表管理
   const [channelList, setChannelList] = useState([])
 
@@ -63,11 +66,13 @@ const Article = () => {
    */
   useEffect(() => {
     const loadList = async () => {
+      setIsLoadingData(true)
       const res = await http.get('/mp/articles', { params })
       setArticleData({
         list: res.data.results,
         count: res.data.total_count,
       })
+      setIsLoadingData(false)
     }
     loadList()
   }, [params])
@@ -218,6 +223,8 @@ const Article = () => {
       {/* 文章列表区域 */}
       <Card title={`根据筛选条件共查询到 ${articleData.count} 条结果：`}>
         <Table
+          loading={isLoadingData}
+          scroll={{ y: 'calc(100vh - 680px)' }}
           rowKey="id"
           columns={columns}
           dataSource={articleData.list}
