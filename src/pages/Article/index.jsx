@@ -26,14 +26,50 @@ const Article = () => {
   // 频道列表管理
   const [channelList, setChannelList] = useState([])
 
+  // useEffect的依赖非常必要，非常容易出现循环执行
+  // 在里面写了引起组件重新渲染的逻辑，重新渲染又会导致useEffect执行
   useEffect(() => {
+    const loadChannelList = async () => {
+      const res = await http.get('/channels')
+      setChannelList(res.data.channels)
+    }
     loadChannelList()
   }, [])
 
-  const loadChannelList = async () => {
-    const res = await http.get('/channels')
-    setChannelList(res.data.channels)
-  }
+  // 文章列表管理
+  const [list, setList] = useState({
+    // 统一管理数据，将来修改setList穿对象
+    list: [], //文章列表
+    count: 0, //文章数量
+  })
+
+  // 文章参数管理
+  const [params, setParams] = useState({
+    page: 1,
+    per_page: 10,
+  })
+
+
+  /**
+   * 如果异步请求函数需要依赖一些数据的变化而重新执行
+   * 推荐把他写在内部
+   * 统一不抽离函数到外面，只要涉及到异步请求的函数，都放在useEffect内部
+   * 
+   * 本质区别
+   * 写到外面每次组件更新都会重新进行函数初始化，这本身就是一次性能消耗
+   * 而写到useEffect中 只会在依赖项发生变化的时候 函数才会进行重新初始化
+   * 
+   * 避免性能损失
+   */
+  useEffect(() => {
+    const loadList = async () => {
+      const res = await http.get('/mp/articles', { params })
+      console.log(res, '===res')
+    }
+    loadList()
+  }, [])
+
+
 
   const data = [
     {
