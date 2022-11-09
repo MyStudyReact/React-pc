@@ -37,8 +37,8 @@ const Article = () => {
   }, [])
 
   // 文章列表管理
-  const [list, setList] = useState({
-    // 统一管理数据，将来修改setList穿对象
+  const [articleData, setArticleData] = useState({
+    // 统一管理数据，将来修改setArticleData穿对象
     list: [], //文章列表
     count: 0, //文章数量
   })
@@ -64,27 +64,14 @@ const Article = () => {
   useEffect(() => {
     const loadList = async () => {
       const res = await http.get('/mp/articles', { params })
+      setArticleData({
+        list: res.data.results,
+        count: res.data.total_count,
+      })
       console.log(res, '===res')
     }
     loadList()
   }, [])
-
-
-
-  const data = [
-    {
-      id: '8218',
-      comment_count: 0,
-      cover: {
-        images: ['http://geek.itheima.net/resources/images/15.jpg'],
-      },
-      like_count: 0,
-      pubdate: '2019-03-11 09:00:00',
-      read_count: 2,
-      status: 2,
-      title: 'wkwebview离线化加载h5资源解决方案'
-    }
-  ]
 
   const columns = [
     {
@@ -92,7 +79,7 @@ const Article = () => {
       dataIndex: 'cover',
       width: 120,
       render: cover => {
-        return <img src={cover || img404} width={80} height={60} alt="" />
+        return <img src={cover.images[0] || img404} width={80} height={60} alt="" />
       }
     },
     {
@@ -197,8 +184,8 @@ const Article = () => {
       </Card>
 
       {/* 文章列表区域 */}
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={data} />
+      <Card title={`根据筛选条件共查询到 ${articleData.count} 条结果：`}>
+        <Table rowKey="id" columns={columns} dataSource={articleData.list} />
       </Card>
     </div>
   )
