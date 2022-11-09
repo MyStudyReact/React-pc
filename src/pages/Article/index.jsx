@@ -68,10 +68,9 @@ const Article = () => {
         list: res.data.results,
         count: res.data.total_count,
       })
-      console.log(res, '===res')
     }
     loadList()
-  }, [])
+  }, [params])
 
   const columns = [
     {
@@ -127,7 +126,33 @@ const Article = () => {
   ]
 
   const onFinish = (values) => {
-    console.log(values, '==values')
+    const { channel_id, date, status } = values
+    // 数据处理
+    const _params = {}
+    if (status !== -1) {
+      _params.status = status
+    }
+    if (channel_id) {
+      _params.channel_id = channel_id
+    }
+    if (date) {
+      _params.begin_pubdate = date[0].format('YYYY-MM-DD')
+      _params.end_pubdate = date[1].format('YYYY-MM-DD')
+    }
+
+    /**
+     * 修改params数据 引起接口的重新发送 
+     * 
+     * 类组件
+     * 对象合并操作，不会进行覆盖
+     * 
+     * 函数组件
+     * 对象合并是一个整体覆盖，改了对象的整体引用
+     */
+    setParams({
+      ...params,
+      ..._params,
+    })
   }
 
   return (
