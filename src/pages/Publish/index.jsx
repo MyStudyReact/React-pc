@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom'
+import { useState } from 'react'
+
 import {
   Card,
   Breadcrumb,
@@ -10,12 +13,27 @@ import {
   Select
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+
+import RichTextEditor from '@/components/RichTextEditor'
+
 import './index.scss'
 
 const { Option } = Select
 
+const initialValues = {
+  type: 1,
+  content: 'this is content',
+}
+
+
 const Publish = () => {
+  const [val, setVal] = useState('')
+
+  const setValueFun = (val) => {
+    console.log(val, '===传过来的值')
+    // setVal(val)
+  }
+
   return (
     <div className="publish">
       <Card
@@ -31,7 +49,7 @@ const Publish = () => {
         <Form
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{ type: 1 }}
+          initialValues={initialValues}
         >
           <Form.Item
             label="标题"
@@ -69,11 +87,16 @@ const Publish = () => {
               </div>
             </Upload>
           </Form.Item>
+
+          {/* 这里的富文本组件，已经被Form.Item控制 */}
+          {/* 他的输入内容 会在onFinished中收集起来 */}
           <Form.Item
             label="内容"
             name="content"
             rules={[{ required: true, message: '请输入文章内容' }]}
-          ></Form.Item>
+          >
+            <RichTextEditor value={val} changeValue={setValueFun}></RichTextEditor>
+          </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
