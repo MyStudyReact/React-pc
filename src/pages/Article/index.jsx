@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space, Popconfirm } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import 'moment/locale/zh-cn'
 import locale from 'antd/es/date-picker/locale/zh_CN'
@@ -77,6 +77,24 @@ const Article = () => {
     loadList()
   }, [params])
 
+
+  const formatStatus = (type) => {
+    const TYPES = {
+      1: <Tag color='red'>审核失败</Tag>,
+      2: <Tag color='green'>审核成功</Tag>
+    }
+    return TYPES[type]
+  }
+
+  const delArticle = async (data) => {
+    await http.delete(`/mp/articles/${data.id}`)
+    // 更新回调
+    setParams({
+      ...params,
+      page: 1,
+    })
+  }
+
   const columns = [
     {
       title: '封面',
@@ -94,7 +112,7 @@ const Article = () => {
     {
       title: '状态',
       dataIndex: 'status',
-      render: data => <Tag color="green">审核通过</Tag>
+      render: data => formatStatus(data)
     },
     {
       title: '发布时间',
@@ -116,15 +134,24 @@ const Article = () => {
       title: '操作',
       render: data => {
         return (
-          <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
-          </Space>
+          articleData.list.length >= 1 ? (
+            <Space size="middle">
+              <Button type="primary" shape="circle" icon={<EditOutlined />} />
+              <Popconfirm
+                title="确定要删除吗?"
+                okText="确定"
+                cancelText="取消"
+                onConfirm={() => delArticle(data)}>
+                <Button
+                  type="primary"
+                  danger
+                  shape="circle"
+                  icon={<DeleteOutlined />}
+                />
+              </Popconfirm>
+            </Space>
+
+          ) : null
         )
       }
     }
