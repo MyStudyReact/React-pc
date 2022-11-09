@@ -2,7 +2,19 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Table, Tag, Space, Popconfirm } from 'antd'
+import {
+  Card,
+  Breadcrumb,
+  Form,
+  Button,
+  Radio,
+  DatePicker,
+  Select,
+  Table,
+  Tag,
+  Space,
+  Popconfirm
+} from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import 'moment/locale/zh-cn'
 import locale from 'antd/es/date-picker/locale/zh_CN'
