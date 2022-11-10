@@ -415,3 +415,56 @@ export default Home
   align-items: center;
 }
 ```
+
+# 发布文章模块
+## 1.上传封面实现
+`本节目标:` 能够实现上传图片
+
+**实现步骤**
+
+1. 为 Upload 组件添加 action 属性，指定封面图片上传接口地址
+2. 创建状态 fileList 存储已上传封面图片地址，并设置为 Upload 组件的 fileList 属性值
+3. 为 Upload 添加 onChange 属性，监听封面图片上传、删除等操作
+4. 在 change 事件中拿到当前图片数据，并存储到状态 fileList 中
+
+**代码实现**
+```jsx
+import { useState } from 'react'
+
+const Publish = () => {
+  const [fileList, setFileList] = useState([])
+  // 上传成功回调
+  const onUploadChange = info => {
+    const fileList = info.fileList.map(file => {
+      if (file.response) {
+        return {
+          url: file.response.data.url
+        }
+      }
+      return file
+    })
+    setFileList(fileList)
+  }
+
+  return (
+    <Upload
+      name="image"
+      listType="picture-card"
+      className="avatar-uploader"
+      showUploadList
+      action="http://geek.itheima.net/v1_0/upload"
+      fileList={fileList}
+      onChange={onUploadChange}
+    >
+      <div style={{ marginTop: 8 }}>
+        <PlusOutlined />
+      </div>
+    </Upload>
+  )
+}
+```
+**温馨提示**
+> 必须设置fileList，不然只执行一次，里面还拿不到 response
+
+> 参考链接 [CSDN网址]:https://blog.csdn.net/guxuehua/article/details/108501507
+

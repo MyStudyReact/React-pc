@@ -39,6 +39,18 @@ const Publish = () => {
   // 频道列表管理
   const { channelStore } = useStore()
 
+  // 存放上传图片的列表
+  const [fileList, setFileList] = useState([])
+
+  const onUploadChange = ({ fileList }) => {
+    console.log(fileList, '=====results')
+    /**
+     * 采取受控的写法：在最后一次log里面 response
+     * 最终在react state fileList中存放的数据有response.data.url
+     */
+    setFileList(fileList)
+  }
+
   return (
     <div className="publish">
       <Card
@@ -70,7 +82,7 @@ const Publish = () => {
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
               {channelStore.channelList.map(item => (
-                <Option value={item.id}>{item.name}</Option>
+                <Option key={item.id} value={item.id}>{item.name}</Option>
               ))}
 
             </Select>
@@ -89,6 +101,9 @@ const Publish = () => {
               listType="picture-card"
               className="avatar-uploader"
               showUploadList
+              action="http://geek.itheima.net/v1_0/upload"
+              fileList={fileList}
+              onChange={onUploadChange}
             >
               <div style={{ marginTop: 8 }}>
                 <PlusOutlined />
