@@ -417,7 +417,57 @@ export default Home
 ```
 
 # 发布文章模块
-## 1.上传封面实现
+# 1. 富文本编辑器
+`本节目标:`  能够安装并初始化富文本编辑器
+
+**实现步骤**
+
+1. 安装富文本编辑器：`npm i react-quill@2.0.0-beta.2 --force`  [react-quill需要安装beta版本适配react18 否则无法输入中文]
+2. 导入富文本编辑器组件以及样式文件
+3. 渲染富文本编辑器组件
+4. 通过 Form 组件的 `initialValues` 为富文本编辑器设置初始值，否则会报错
+5. 调整富文本编辑器的样式
+
+**代码实现**<br />`pages/Publish/index.js`
+```jsx
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+
+const Publish = () => {
+  return (
+    // ...
+    <Form
+      labelCol={{ span: 4 }}
+      wrapperCol={{ span: 16 }}
+      // 注意：此处需要为富文本编辑表示的 content 文章内容设置默认值
+      initialValues={{ content: '' }}
+    >
+      <Form.Item
+        label="内容"
+        name="content"
+        rules={[{ required: true, message: '请输入文章内容' }]}
+      >
+        <ReactQuill
+          className="publish-quill"
+          theme="snow"
+          placeholder="请输入文章内容"
+        />
+      </Form.Item>
+    </Form>
+  )
+}
+```
+
+`pages/Publish/index.scss`
+```css
+.publish-quill {
+  .ql-editor {
+    min-height: 300px;
+  }
+}
+```
+
+## 2.上传封面实现
 `本节目标:` 能够实现上传图片
 
 **实现步骤**
@@ -468,4 +518,48 @@ const Publish = () => {
 > onUploadChange就会执行三次，在上传之前，上传刚好结束，上传完成
 
 > 参考链接 [CSDN网址]:https://blog.csdn.net/guxuehua/article/details/108501507
+
+## 3. 暂存图片列表实现
+`本节目标:` 能够实现暂存已经上传的图片列表，能够在切换图片类型的时候完成切换
+
+**问题描述**<br />如果当前为三图模式，已经完成了上传，选择单图只显示一张，再切换到三图继续显示三张，该如何实现？
+
+**实现思路**<br />在上传完毕之后通过ref存储所有图片，需要几张就显示几张，其实也就是把ref当仓库，用多少拿多少
+
+**实现步骤 （特别注意useState异步更新的坑）**
+
+1. 通过useRef创建一个暂存仓库，在上传完毕图片的时候把图片列表存入
+2. 如果是单图模式，就从仓库里取第一张图，以**数组的形式**存入fileList
+3. 如果是三图模式，就把仓库里所有的图片，以**数组的形式**存入fileList
+
+**代码实现**
+```javascript
+const Publish = () => {
+  // 1. 声明一个暂存仓库
+  const fileListRef = useRef([])
+  
+  // 2. 上传图片时，将所有图片存储到 ref 中
+  const onUploadChange = info => {
+    // ...
+    fileListRef.current = imgUrls
+  }
+  
+  // 3. 切换图片类型
+  const changeType = e => {
+    // 使用原始数据作为判断条件
+    const count = e.target.value
+    setMaxCount(count)
+
+    if (count === 1) {
+      // 单图，只展示第一张
+      const firstImg = fileListRef.current[0]
+      setFileList(!firstImg ? [] : [firstImg])
+    } else if (count === 3) {
+      // 三图，展示所有图片
+      setFileList(fileListRef.current)
+    }
+  }
+
+}
+```
 

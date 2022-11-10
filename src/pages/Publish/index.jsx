@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { observer } from 'mobx-react-lite'
 
 import ReactQuill from 'react-quill'
@@ -40,18 +40,39 @@ const Publish = () => {
   // 存放上传图片的列表
   const [fileList, setFileList] = useState([])
 
+  // 1.使用useRef声明一个暂存仓库
+  const cacheImgList = useRef()
+
   const onUploadChange = ({ fileList }) => {
     /**
      * 采取受控的写法：在最后一次log里面 response
      * 最终在react state fileList中存放的数据有response.data.url
      */
     setFileList(fileList)
+
+    // 同时把图片列表存入仓库一份
+    cacheImgList.current = fileList
   }
 
   // 切换图片
   const [imgCount, setImgCount] = useState(1)
   const radioChange = (e) => {
     setImgCount(e.target.value)
+
+    /**
+     *  从仓库里面取对应的图片数量，交给我们用来渲染图片列表fileList
+     * 
+     *  通过调用 setFileList
+     */
+
+    let img = []
+    // 这里的判断依据我们采用原始值
+    if (e.target.value === 1) {
+      img = cacheImgList.current ? [cacheImgList.current[0]] : []
+    } else if (e.target.value === 3) {
+      img = cacheImgList.current
+    }
+    setFileList(img)
   }
 
   // 提交表单
