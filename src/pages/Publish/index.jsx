@@ -104,6 +104,8 @@ const Publish = () => {
             </Form.Item>
             {imgCount > 0 && (
               <Upload
+                maxCount={imgCount}
+                multiple={imgCount > 1}
                 name="image"
                 listType="picture-card"
                 className="avatar-uploader"
