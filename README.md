@@ -465,6 +465,7 @@ const Publish = () => {
 ```
 **温馨提示**
 > 必须设置fileList，不然只执行一次，里面还拿不到 response
+> onUploadChange就会执行三次，在上传之前，上传刚好结束，上传完成
 
 > 参考链接 [CSDN网址]:https://blog.csdn.net/guxuehua/article/details/108501507
 
