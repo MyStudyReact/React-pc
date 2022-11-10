@@ -34,14 +34,15 @@ const items = [
 ]
 
 const GeekLayout = () => {
-  const { userStore, loginStore } = useStore()
+  const { userStore, loginStore, channelStore } = useStore()
 
   const { pathname } = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
     userStore.getUserInfo()
-  }, [])
+    channelStore.loadChannelList()
+  }, [userStore, channelStore])
 
   const toMenuItem = (e) => {
     navigate(e.key)

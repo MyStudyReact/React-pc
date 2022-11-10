@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { observer } from 'mobx-react-lite'
 
 import {
   Card,
@@ -14,6 +15,7 @@ import {
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
+import { useStore } from '@/store'
 import RichTextEditor from '@/components/RichTextEditor'
 
 import './index.scss'
@@ -33,6 +35,9 @@ const Publish = () => {
     console.log(val, '===传过来的值')
     // setVal(val)
   }
+
+  // 频道列表管理
+  const { channelStore } = useStore()
 
   return (
     <div className="publish">
@@ -64,7 +69,10 @@ const Publish = () => {
             rules={[{ required: true, message: '请选择文章频道' }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
+              {channelStore.channelList.map(item => (
+                <Option value={item.id}>{item.name}</Option>
+              ))}
+
             </Select>
           </Form.Item>
 
@@ -111,4 +119,4 @@ const Publish = () => {
   )
 }
 
-export default Publish
+export default observer(Publish)

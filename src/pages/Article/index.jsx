@@ -1,6 +1,7 @@
 
 import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import { observer } from 'mobx-react-lite'
 
 import {
   Card,
@@ -20,6 +21,7 @@ import 'moment/locale/zh-cn'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 
 import { http } from '@/utils/http'
+import { useStore } from '@/store'
 
 
 import './index.scss'
@@ -39,17 +41,7 @@ const Article = () => {
   const [isLoadingData, setIsLoadingData] = useState(false)
 
   // 频道列表管理
-  const [channelList, setChannelList] = useState([])
-
-  // useEffect的依赖非常必要，非常容易出现循环执行
-  // 在里面写了引起组件重新渲染的逻辑，重新渲染又会导致useEffect执行
-  useEffect(() => {
-    const loadChannelList = async () => {
-      const res = await http.get('/channels')
-      setChannelList(res.data.channels)
-    }
-    loadChannelList()
-  }, [])
+  const { channelStore } = useStore()
 
   // 文章列表管理
   const [articleData, setArticleData] = useState({
@@ -247,7 +239,7 @@ const Article = () => {
               placeholder="请选择文章频道"
               style={{ width: 120 }}
             >
-              {channelList.map((item) => {
+              {channelStore.channelList.map((item) => {
                 return (
                   <Option key={item.id} value={item.id}>{item.name}</Option>
                 )
@@ -287,4 +279,4 @@ const Article = () => {
   )
 }
 
-export default Article
+export default observer(Article) 
