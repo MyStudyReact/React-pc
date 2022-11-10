@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
 
+import ReactQuill from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
+
 import {
   Card,
   Breadcrumb,
@@ -16,7 +19,7 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 
 import { useStore } from '@/store'
-import RichTextEditor from '@/components/RichTextEditor'
+import { http } from '@/utils'
 
 import './index.scss'
 
@@ -29,12 +32,7 @@ const initialValues = {
 
 
 const Publish = () => {
-  const [val, setVal] = useState('')
-
-  const setValueFun = (val) => {
-    console.log(val, '===传过来的值')
-    // setVal(val)
-  }
+  const [value, setValue] = useState('')
 
   // 频道列表管理
   const { channelStore } = useStore()
@@ -43,7 +41,6 @@ const Publish = () => {
   const [fileList, setFileList] = useState([])
 
   const onUploadChange = ({ fileList }) => {
-    console.log(fileList, '=====results')
     /**
      * 采取受控的写法：在最后一次log里面 response
      * 最终在react state fileList中存放的数据有response.data.url
@@ -55,6 +52,24 @@ const Publish = () => {
   const [imgCount, setImgCount] = useState(1)
   const radioChange = (e) => {
     setImgCount(e.target.value)
+  }
+
+  // 提交表单
+  const onFinish = async (values) => {
+    // 数据的二次处理，重点是处理cover字段
+    const { channel_id, content, title, type } = values
+    const params = {
+      channel_id,
+      content,
+      title,
+      type,
+      cover: {
+        type,
+        images: fileList.map(item => item.response.data.url)
+      }
+    }
+
+    await http.post('/mp/articles?draft=false', params)
   }
 
   return (
@@ -73,6 +88,7 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={initialValues}
+          onFinish={onFinish}
         >
           <Form.Item
             label="标题"
@@ -129,7 +145,7 @@ const Publish = () => {
             name="content"
             rules={[{ required: true, message: '请输入文章内容' }]}
           >
-            <RichTextEditor value={val} changeValue={setValueFun}></RichTextEditor>
+            <ReactQuill className='publish-quill' theme="snow" value={value} onChange={setValue} />
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 4 }}>
