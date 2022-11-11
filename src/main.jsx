@@ -9,7 +9,7 @@ import './index.scss'
 
 // 需要去掉严格模式，否则他会掉两次接口，但是只会在开发模式下生效
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>
 )

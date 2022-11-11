@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { useState, useRef } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 
 import ReactQuill from 'react-quill'
@@ -93,6 +93,26 @@ const Publish = () => {
     await http.post('/mp/articles?draft=false', params)
   }
 
+
+  // 编辑功能
+  // 文案适配：路由参数 articleId 判断条件
+  const [params] = useSearchParams()
+  const articleId = params.get('id')
+  // 数据回填 id调用接口 1.表单回填 2.暂存回填 3.Upload组件fileList
+  useEffect(() => {
+    const loadDetail = async () => {
+      const res = await http.get(`/mp/articles/${articleId}`)
+      console.log(res, '===res')
+    }
+
+    // 必须是编辑状态，才可以发送请求
+    if (articleId) {
+      loadDetail()
+      console.log(formRef.current, '=====formRef')
+    }
+  }, [articleId])
+
+
   return (
     <div className="publish">
       <Card
@@ -101,7 +121,7 @@ const Publish = () => {
             <Breadcrumb.Item>
               <Link to="/home">首页</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+            <Breadcrumb.Item>{articleId ? '编辑' : '发布'}文章</Breadcrumb.Item>
           </Breadcrumb>
         }
       >
@@ -172,7 +192,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {articleId ? '更新' : '发布'}文章
               </Button>
             </Space>
           </Form.Item>
