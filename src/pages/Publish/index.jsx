@@ -44,6 +44,7 @@ const Publish = () => {
   const cacheImgList = useRef()
 
   const onUploadChange = ({ fileList }) => {
+    console.log(fileList, '=====fileList')
     /**
      * 采取受控的写法：在最后一次log里面 response
      * 最终在react state fileList中存放的数据有response.data.url
@@ -93,6 +94,8 @@ const Publish = () => {
     await http.post('/mp/articles?draft=false', params)
   }
 
+  // 1.表单回填
+  const formRef = useRef(null)
 
   // 编辑功能
   // 文案适配：路由参数 articleId 判断条件
@@ -102,13 +105,21 @@ const Publish = () => {
   useEffect(() => {
     const loadDetail = async () => {
       const res = await http.get(`/mp/articles/${articleId}`)
-      console.log(res, '===res')
+      const { cover, ...formValue } = res.data
+      // 1.表单数据回填 实例方法
+      formRef.current.setFieldsValue({ ...formValue, type: cover.type })
+      setImgCount(cover.type)
+
+      console.log(cover.images, res.data, '===res.data')
+      // 2.暂存回填
+      const imageList = cover.images.map(url => ({ url }))
+      setFileList(imageList)
+      cacheImgList.current = imageList
     }
 
     // 必须是编辑状态，才可以发送请求
     if (articleId) {
       loadDetail()
-      console.log(formRef.current, '=====formRef')
     }
   }, [articleId])
 
@@ -119,13 +130,14 @@ const Publish = () => {
         title={
           <Breadcrumb separator=">">
             <Breadcrumb.Item>
-              <Link to="/home">首页</Link>
+              <Link to="/">首页</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item>{articleId ? '编辑' : '发布'}文章</Breadcrumb.Item>
           </Breadcrumb>
         }
       >
         <Form
+          ref={formRef}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={initialValues}
