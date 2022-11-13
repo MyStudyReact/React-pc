@@ -14,7 +14,8 @@ import {
   Input,
   Upload,
   Space,
-  Select
+  Select,
+  message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -108,12 +109,11 @@ const Publish = () => {
       const { cover, ...formValue } = res.data
       // 1.表单数据回填 实例方法
       formRef.current.setFieldsValue({ ...formValue, type: cover.type })
-      setImgCount(cover.type)
 
-      console.log(cover.images, res.data, '===res.data')
       // 2.暂存回填
       const imageList = cover.images.map(url => ({ url }))
       setFileList(imageList)
+      // 暂存列表也存一份
       cacheImgList.current = imageList
     }
 
