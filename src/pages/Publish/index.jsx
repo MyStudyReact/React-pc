@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 
@@ -33,6 +33,7 @@ const initialValues = {
 
 
 const Publish = () => {
+  const navigate = useNavigate()
   const [value, setValue] = useState('')
 
   // 频道列表管理
@@ -49,11 +50,24 @@ const Publish = () => {
     /**
      * 采取受控的写法：在最后一次log里面 response
      * 最终在react state fileList中存放的数据有response.data.url
+     * 
+     * 但是我们不需要那么多参数，需要做数据格式化
      */
-    setFileList(fileList)
+    const formatList = fileList.map(file => {
+      // 上传完毕 做数据处理
+      if (file.response) {
+        return {
+          url: file.response.data.url
+        }
+      }
+
+      // 否则再上传中时不做处理
+      return file
+    })
+    setFileList(formatList)
 
     // 同时把图片列表存入仓库一份
-    cacheImgList.current = fileList
+    cacheImgList.current = formatList
   }
 
   // 切换图片
@@ -80,19 +94,43 @@ const Publish = () => {
   // 提交表单
   const onFinish = async (values) => {
     // 数据的二次处理，重点是处理cover字段
-    const { channel_id, content, title, type } = values
+    // const { channel_id, content, title, type } = values
+    // const params = {
+    //   channel_id,
+    //   content,
+    //   title,
+    //   type,
+    //   cover: {
+    //     type,
+    //     images: fileList.map(item => item.response.data.url)
+    //   }
+    // }
+
+    // 简写
+    const { type, ...res } = values
+
+    console.log(values, fileList, '===values')
     const params = {
-      channel_id,
-      content,
-      title,
-      type,
+      ...res,
       cover: {
         type,
-        images: fileList.map(item => item.response.data.url)
+        images: fileList.map(item => item.url) //这里数据有问题，需处理
       }
     }
 
-    await http.post('/mp/articles?draft=false', params)
+    let title = ''
+    if (articleId) {
+      // 编辑
+      await http.put(`/mp/articles/${articleId}?draft=false`, params)
+      title = '更新'
+    } else {
+      // 新增
+      await http.post('/mp/articles?draft=false', params)
+      title = '发布'
+    }
+    // 跳转列表 提示用户
+    navigate('/article')
+    message.success(`${title}成功!`)
   }
 
   // 1.表单回填
